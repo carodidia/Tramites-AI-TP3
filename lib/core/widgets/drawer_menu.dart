@@ -21,6 +21,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
         context.push(menuItems[value].link);
       },
       children: [
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor, // Aquí se utiliza el color primario del tema
+          ),
+          child: Text(
+            'Trámites AI',
+            style: TextStyle(
+            color: Theme.of(context).secondaryHeaderColor,
+              fontSize: 24,
+            ),
+          ),
+        ),
         ... menuItems.sublist(0,4)
         .map((item)=> NavigationDrawerDestination(
           icon: Icon(item.icon), 
@@ -30,7 +42,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
             padding: EdgeInsets.all(8.0),
             child: Divider(),
           ),
-          ... menuItems.sublist(4,6)
+          ... menuItems.sublist(4,7)
         .map((item)=> NavigationDrawerDestination(
           icon: Icon(item.icon), 
           label: Text(item.title)))

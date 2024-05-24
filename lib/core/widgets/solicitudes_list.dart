@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
+import 'package:proyecto_final/presentation/screens/solicitud_screen.dart';
 
 class SolicitudesList extends StatelessWidget {
   final List<Solicitud> solicitudes;
   const SolicitudesList({
-    super.key, required this.solicitudes,
+    super.key,
+    required this.solicitudes,
   });
 
   @override
@@ -32,14 +35,14 @@ class _CustomListTile extends StatelessWidget {
     IconData iconData;
     Color color;
 
-    if(solicitud.estaAprobada == null){
-      iconData = Icons.error_outline_rounded;
+    if (solicitud.estaAprobada == null) {
+      iconData = Icons.circle;
       color = const Color(0xFFEFCA11);
-    } else if(solicitud.estaAprobada == false){
-      iconData = Icons.close;
-      color =const Color(0xFFC40D0D);
-    }else{
-      iconData = Icons.done_all_outlined;
+    } else if (solicitud.estaAprobada == false) {
+      iconData = Icons.circle;
+      color = const Color(0xFFC40D0D);
+    } else {
+      iconData = Icons.circle;
       color = const Color(0xFF299303);
     }
 
@@ -53,8 +56,8 @@ class _CustomListTile extends StatelessWidget {
           title: Text("Solicitud ID: ${solicitud.id}"),
           subtitle: Text("Asunto: ${solicitud.asunto}"),
           trailing: const Icon(Icons.arrow_forward_ios),
-          onTap: (){
-            
+          onTap: () {
+            context.pushNamed(SolicitudScreen.name, extra: solicitud);
           },
         ),
         const Divider(

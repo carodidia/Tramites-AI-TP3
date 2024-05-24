@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:proyecto_final/core/entities/solicitud.dart';
 import 'package:proyecto_final/presentation/screens/formulario_screen.dart';
 import 'package:proyecto_final/presentation/screens/historial_screen.dart';
 import 'package:proyecto_final/presentation/screens/home_screen.dart';
@@ -7,43 +8,41 @@ import 'package:proyecto_final/presentation/screens/perfil_screen.dart';
 import 'package:proyecto_final/presentation/screens/solicitud_screen.dart';
 import 'package:proyecto_final/presentation/screens/solicitudes_screen.dart';
 
-final AppRouter = GoRouter(
-  initialLocation: '/',
-  routes:[
-    //GoRoute(
-     // name: LogInScreen.name,
-    //  path: '/',
-     // builder: (context, state)=> const LogInScreen()),
+final AppRouter = GoRouter(initialLocation: '/', routes: [
+  //GoRoute(
+  // name: LogInScreen.name,
+  //  path: '/',
+  // builder: (context, state)=> const LogInScreen()),
 
-   GoRoute(
+  GoRoute(
       name: HomeScreen.name,
       path: '/',
-      builder: (context, state)=> const HomeScreen()),
-      
-      GoRoute(
+      builder: (context, state) => const HomeScreen()),
+
+  GoRoute(
       name: FormularioScreen.name,
       path: '/formulario',
-      builder: (context, state)=> const FormularioScreen()),
+      builder: (context, state) => const FormularioScreen()),
 
-      GoRoute(
+  GoRoute(
       name: HistorialScreen.name,
       path: '/historial',
-      builder: (context, state)=> const HistorialScreen()),
+      builder: (context, state) => const HistorialScreen()),
 
-      GoRoute(
+  GoRoute(
       name: PerfilScreen.name,
       path: '/perfil',
-      builder: (context, state)=> const PerfilScreen()),
+      builder: (context, state) => const PerfilScreen()),
 
-      GoRoute(
+  GoRoute(
       name: SolicitudScreen.name,
-      path: '/solicitud/:id',
-      builder: (context, state)=> const SolicitudScreen()),
+      path: '/solicitud',
+      builder: (context, state) => SolicitudScreen(
+            solicitud: state.extra as Solicitud,
+          )),
 
-      GoRoute(
+  GoRoute(
       name: SolicitudesScreen.name,
       path: '/solicitudes',
-      builder: (context, state)=> SolicitudesScreen()),
-
-  ]
-  );
+      builder: (context, state) => SolicitudesScreen()),
+]);

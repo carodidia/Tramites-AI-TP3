@@ -2,7 +2,7 @@ class Solicitud {
   String id;
   String mail;
   String asunto;
-  int fechaDeCreacion;
+  DateTime fechaDeCreacion;
   String mensaje;
   String respuesta;
   bool? estaAprobada;
