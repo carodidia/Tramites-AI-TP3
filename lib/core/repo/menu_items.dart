@@ -45,6 +45,11 @@ const List<MenuItem> menuItems=[
     icon: Icons.logout, 
     link: '/home',
     ),
+    MenuItem(
+    title: 'Test', 
+    icon: Icons.developer_mode, 
+    link: '/test',
+    ),
     
 
 ];
