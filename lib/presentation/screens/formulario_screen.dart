@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/widgets/drawer_menu.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormularioScreen extends StatefulWidget {
   static const String name = 'formularioscreen';
@@ -20,18 +19,32 @@ class _FormularioScreenState extends State<FormularioScreen> {
       appBar: AppBar(
         title: const Text('Formulario'),
       ),
-      body: FormularioBody(),
+      body: const FormularioBody(),
       drawer: const DrawerMenu(),
     );
   }
 }
 
-class FormularioBody extends StatelessWidget {
-  FormularioBody({super.key});
+class FormularioBody extends StatefulWidget {
+  const FormularioBody({super.key});
+
+  @override
+  State<FormularioBody> createState() => _FormularioBodyState();
+}
+
+class _FormularioBodyState extends State<FormularioBody> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
+
   final GlobalKey<FormState> _formularioEstado = GlobalKey<FormState>();
+
   final emailController = TextEditingController();
+
   final asuntoController = TextEditingController();
+
   final mensajeController = TextEditingController();
+
+  String respuestaIA = 'Rechazada por AI';
+
 //ABRIR DIALOG DEL MENSAJE
   void _showMessageDialog(BuildContext context, Map<String, dynamic> formData) {
     showDialog(
@@ -46,10 +59,20 @@ class FormularioBody extends StatelessWidget {
                     },
                     child: const Text('Cancel')),
                 FilledButton(
-                    onPressed: () {
-                      context.go('/');
-                      SnackBarWidget.show(context, "Formulario enviado", Colors.green);
-                      print("Formulario enviado \n$formData");
+                    onPressed: () async {
+                      print("Enviando datos");
+                      final doc = db.collection("solicitudes").doc();
+                      final newSolicitud = {
+                        ...formData, // Propagamos todos los datos de formData
+                        'id': doc.id,
+                      };
+                      await doc.set(newSolicitud);
+                      print("Solicitud guardado");
+                      print(newSolicitud);
+
+                      // context.go('/');
+                      // SnackBarWidget.show(context, "Formulario enviado", Colors.green);
+                      // print("Formulario enviado \n$formData");
                     },
                     child: const Text('Confirmar'))
               ],
@@ -72,8 +95,8 @@ class FormularioBody extends StatelessWidget {
                     TextFormField(
                       controller: emailController,
                       validator: (value) {
-                        if (!value!.contains("@")) {
-                          return "Ingrese un email valido.";
+                        if (value == null || !value.contains("@")) {
+                          return "Ingrese un email válido.";
                         } else {
                           return null;
                         }
@@ -117,6 +140,42 @@ class FormularioBody extends StatelessWidget {
                       keyboardType: TextInputType.multiline,
                     ),
                     const SizedBox(height: 16.0),
+                    const Text('Simulación respuesta IA:'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text(
+                              'Rechazada por AI',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            value: 'Rechazada por AI',
+                            groupValue: respuestaIA,
+                            onChanged: (value) {
+                              setState(() {
+                                respuestaIA = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text(
+                              'Aprobada por AI',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            value: 'Aprobada por AI',
+                            groupValue: respuestaIA,
+                            onChanged: (value) {
+                              setState(() {
+                                respuestaIA = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
                     ElevatedButton.icon(
                       onPressed: () {
                         // Acción para adjuntar archivos (no funcional por ahora)
@@ -133,16 +192,17 @@ class FormularioBody extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: FilledButton(
               onPressed: () {
-                // Acción al presionar el botón de enviar
+                // Crea la solicitud al "Enviar"
                 if (_formularioEstado.currentState!.validate()) {
+                  _formularioEstado.currentState!.save();
                   final formData = {
-                    'id': '312',
+                    'id': '',
                     'mail': emailController.text,
                     'asunto': asuntoController.text,
                     'mensaje': mensajeController.text,
-                    'fechaDeCreacion': DateTime.now()
-                        .toIso8601String(), // Convertir DateTime a cadena
-                    'respuesta': 'Rechazado por AI',
+                    'fechaDeCreacion': Timestamp.now(),
+                    'respuestaIA': respuestaIA,
+                    'estaAprobada': null,
                   };
                   _showMessageDialog(context, formData);
                 }

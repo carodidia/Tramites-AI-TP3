@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "234228132707",
+    "project_id": "tramitesai-66621",
+    "storage_bucket": "tramitesai-66621.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234228132707:android:2b91ea4822f7a2754e0156",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3jo2Efkh6M3G6GyesoJ7IxAcMXOZDfbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

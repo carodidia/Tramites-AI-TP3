@@ -50,7 +50,7 @@ class SolicitudScreen extends StatelessWidget {
             _buildInfoRow(Icons.email_outlined, solicitud.mail),
             _buildInfoRow(Icons.announcement_outlined, solicitud.asunto),
             _buildInfoRow(Icons.calendar_month_outlined,
-                _getFormattedDate(solicitud.fechaDeCreacion)),
+                _getFormattedDate(solicitud.fechaCreacion)),
             _buildInfoRow(Icons.person_outline, solicitud.id),
             const SizedBox(height: 16.0),
             ElevatedButton(
@@ -62,7 +62,7 @@ class SolicitudScreen extends StatelessWidget {
             const Divider(height: 32.0, thickness: 2.0),
             const Text('Respuesta de la IA:', style: TextStyle(fontSize: 18.0)),
             const SizedBox(height: 8.0),
-            Text(solicitud.respuesta),
+            Text(solicitud.respuestaIA),
             const SizedBox(height: 100.0),
             Visibility(
               visible: solicitud.estaAprobada == null,

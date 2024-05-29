@@ -2,18 +2,18 @@ class Solicitud {
   String id;
   String mail;
   String asunto;
-  DateTime fechaDeCreacion;
+  DateTime fechaCreacion;
   String mensaje;
-  String respuesta;
+  String respuestaIA;
   bool? estaAprobada;
 
   Solicitud({
     required this.id,
     required this.mail,
     required this.asunto,
-    required this.fechaDeCreacion,
+    required this.fechaCreacion,
     required this.mensaje,
-    required this.respuesta,
+    required this.respuestaIA,
     this.estaAprobada,
   });
 
