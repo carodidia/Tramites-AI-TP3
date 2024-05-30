@@ -14,7 +14,7 @@ class MenuItem{
 
 const List<MenuItem> menuItems=[
   MenuItem(
-    title: 'Home', 
+    title: 'Inicio', 
     icon: Icons.home, 
     link: '/',
     ),

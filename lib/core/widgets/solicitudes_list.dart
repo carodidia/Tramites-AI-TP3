@@ -11,14 +11,23 @@ class SolicitudesList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: solicitudes.length,
-      itemBuilder: (context, index) {
-        final solicitud = solicitudes[index];
-        return _CustomListTile(solicitud: solicitud);
-      },
-    );
+   Widget build(BuildContext context) {
+    if (solicitudes.isEmpty) {
+      return const Center(
+        child: Text(
+          'No hay solicitudes',
+          style: TextStyle(fontSize: 20),
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: solicitudes.length,
+        itemBuilder: (context, index) {
+          final solicitud = solicitudes[index];
+          return _CustomListTile(solicitud: solicitud);
+        },
+      );
+    }
   }
 }
 

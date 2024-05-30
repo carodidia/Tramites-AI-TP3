@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/repo/menu_items.dart';
 
 class DrawerMenu extends StatefulWidget {
-  const DrawerMenu({super.key});
+  final GlobalKey<ScaffoldState> scafoldKey;
+  const DrawerMenu({super.key, required this.scafoldKey});
 
   @override
   State<DrawerMenu> createState() => _DrawerMenuState();
@@ -16,9 +17,11 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return NavigationDrawer(
       selectedIndex: selectedScreen,
       onDestinationSelected: (value){
-        selectedScreen = value;
-        setState(() {});
+        setState(() {
+                  selectedScreen = value;
+        });
         context.push(menuItems[value].link);
+        widget.scafoldKey.currentState?.closeDrawer();
       },
       children: [
         DrawerHeader(

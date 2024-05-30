@@ -17,7 +17,7 @@ final AppRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
       name: HomeScreen.name,
       path: '/',
-      builder: (context, state) => const HomeScreen()),
+      builder: (context, state) => HomeScreen()),
 
   GoRoute(
       name: FormularioScreen.name,
@@ -27,12 +27,12 @@ final AppRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
       name: HistorialScreen.name,
       path: '/historial',
-      builder: (context, state) => const HistorialScreen()),
+      builder: (context, state) => HistorialScreen()),
 
   GoRoute(
       name: PerfilScreen.name,
       path: '/perfil',
-      builder: (context, state) => const PerfilScreen()),
+      builder: (context, state) => PerfilScreen()),
 
   GoRoute(
       name: SolicitudScreen.name,

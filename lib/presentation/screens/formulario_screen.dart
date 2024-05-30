@@ -13,6 +13,8 @@ class FormularioScreen extends StatefulWidget {
 }
 
 class _FormularioScreenState extends State<FormularioScreen> {
+  final scafoldKey = GlobalKey<ScaffoldState>();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +22,7 @@ class _FormularioScreenState extends State<FormularioScreen> {
         title: const Text('Formulario'),
       ),
       body: const FormularioBody(),
-      drawer: const DrawerMenu(),
+      drawer: DrawerMenu(scafoldKey: scafoldKey),
     );
   }
 }
@@ -44,6 +46,8 @@ class _FormularioBodyState extends State<FormularioBody> {
   final mensajeController = TextEditingController();
 
   String respuestaIA = 'Rechazada por AI';
+  bool _isLoading = false;
+
 
 //ABRIR DIALOG DEL MENSAJE
   void _showMessageDialog(BuildContext context, Map<String, dynamic> formData) {
@@ -59,20 +63,27 @@ class _FormularioBodyState extends State<FormularioBody> {
                     },
                     child: const Text('Cancel')),
                 FilledButton(
-                    onPressed: () async {
-                      print("Enviando datos");
-                      final doc = db.collection("solicitudes").doc();
-                      final newSolicitud = {
-                        ...formData, // Propagamos todos los datos de formData
-                        'id': doc.id,
-                      };
-                      await doc.set(newSolicitud);
-                      print("Solicitud guardado");
-                      print(newSolicitud);
-
-                      // context.go('/');
-                      // SnackBarWidget.show(context, "Formulario enviado", Colors.green);
-                      // print("Formulario enviado \n$formData");
+                    onPressed: () {
+                      context.pop(); //Cierra el dialog al apretar el boton
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      try{
+                        final doc = db.collection("solicitudes").doc();
+                        final newSolicitud = {
+                          ...formData, // Propagamos todos los datos de formData
+                          'id': doc.id,
+                        };
+                        doc.set(newSolicitud);
+                        SnackBarWidget.show(context, "Formulario enviado", Colors.green);
+                      }catch (e) {
+                        SnackBarWidget.show(context, "Error al enviar la solicitud", Colors.red);
+                      }finally{
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: const Text('Confirmar'))
               ],
@@ -85,6 +96,7 @@ class _FormularioBodyState extends State<FormularioBody> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
+          //FORMULARIOO
           Expanded(
             child: SingleChildScrollView(
               child: Form(
@@ -107,7 +119,9 @@ class _FormularioBodyState extends State<FormularioBody> {
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
+                    
                     const SizedBox(height: 16.0),
+
                     TextFormField(
                       controller: asuntoController,
                       validator: (value) {
@@ -122,7 +136,9 @@ class _FormularioBodyState extends State<FormularioBody> {
                         border: OutlineInputBorder(),
                       ),
                     ),
+
                     const SizedBox(height: 16.0),
+
                     TextFormField(
                       controller: mensajeController,
                       validator: (value) {
@@ -139,7 +155,9 @@ class _FormularioBodyState extends State<FormularioBody> {
                       maxLines: 6,
                       keyboardType: TextInputType.multiline,
                     ),
+
                     const SizedBox(height: 16.0),
+
                     const Text('Simulación respuesta IA:'),
                     Row(
                       children: [
@@ -188,27 +206,31 @@ class _FormularioBodyState extends State<FormularioBody> {
               ),
             ),
           ),
+
+          //BOTON ENVIAR
           Align(
             alignment: Alignment.bottomCenter,
-            child: FilledButton(
-              onPressed: () {
-                // Crea la solicitud al "Enviar"
-                if (_formularioEstado.currentState!.validate()) {
-                  _formularioEstado.currentState!.save();
-                  final formData = {
-                    'id': '',
-                    'mail': emailController.text,
-                    'asunto': asuntoController.text,
-                    'mensaje': mensajeController.text,
-                    'fechaDeCreacion': Timestamp.now(),
-                    'respuestaIA': respuestaIA,
-                    'estaAprobada': null,
-                  };
-                  _showMessageDialog(context, formData);
-                }
-              },
-              child: const Text('Enviar'),
-            ),
+            child: _isLoading
+                ? const CircularProgressIndicator()
+                : FilledButton(
+                    onPressed: () {
+                      // Crea la solicitud al "Enviar"
+                      if (_formularioEstado.currentState!.validate()) {
+                        _formularioEstado.currentState!.save();
+                        final formData = {
+                          'id': '',
+                          'mail': emailController.text,
+                          'asunto': asuntoController.text,
+                          'mensaje': mensajeController.text,
+                          'fechaCreacion': Timestamp.now(),
+                          'respuestaIA': respuestaIA,
+                          'estaAprobada': null,
+                        };
+                        _showMessageDialog(context, formData);
+                      }
+                    },
+                    child: const Text('Enviar'),
+                  ),
           ),
         ],
       ),

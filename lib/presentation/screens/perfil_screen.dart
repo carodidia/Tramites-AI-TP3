@@ -4,8 +4,9 @@ import 'package:proyecto_final/core/widgets/drawer_menu.dart';
 
 class PerfilScreen extends StatelessWidget {
   static const String name = 'perfilscreen';
+  final scafoldKey = GlobalKey<ScaffoldState>();
 
-  const PerfilScreen({
+  PerfilScreen({
     super.key,
   });
 
@@ -15,7 +16,7 @@ class PerfilScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Perfil'),
       ),
-      drawer: const DrawerMenu(),
+      drawer: DrawerMenu(scafoldKey: scafoldKey),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
