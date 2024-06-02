@@ -62,7 +62,7 @@ class _CustomListTile extends StatelessWidget {
             iconData,
             color: color,
           ),
-          title: Text("Solicitud ID: ${solicitud.id}"),
+          title: Text("Cliente: ${solicitud.mail}"),
           subtitle: Text("Asunto: ${solicitud.asunto}"),
           trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () {

@@ -2,9 +2,7 @@
 Falta hacer los usuarios.
 Falta hacer el login (pagina para crear un usuario?)
 Falta hacer la pagina del perfil, y poder modificar los datos del usuario
-Falta aceptar o rechazar las solicitudes que no tienen respuesta del usuario
-
-
+Falta aceptar o rechazar las solicitudes que no tienen respuesta del usuario. HECHO
 
 
 

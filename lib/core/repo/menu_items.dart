@@ -43,7 +43,7 @@ const List<MenuItem> menuItems=[
     MenuItem(
     title: 'LogOut', 
     icon: Icons.logout, 
-    link: '/home',
+    link: '/',
     ),
     MenuItem(
     title: 'Test', 
