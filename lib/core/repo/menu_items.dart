@@ -16,7 +16,7 @@ const List<MenuItem> menuItems=[
   MenuItem(
     title: 'Inicio', 
     icon: Icons.home, 
-    link: '/',
+    link: '/home',
     ),
     MenuItem(
     title: 'Solicitudes', 
@@ -43,7 +43,7 @@ const List<MenuItem> menuItems=[
     MenuItem(
     title: 'LogOut', 
     icon: Icons.logout, 
-    link: '/home',
+    link: '/',
     ),
     MenuItem(
     title: 'Test', 

@@ -34,6 +34,7 @@ class HistorialScreen extends StatelessWidget {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
           List<Solicitud> solicitudes = snapshot.data!;
+          solicitudes.sort((a,b) => a.fechaCreacion.compareTo(b.fechaCreacion));
           return Scaffold(
             appBar: AppBar(
               title: Text('Historial'),

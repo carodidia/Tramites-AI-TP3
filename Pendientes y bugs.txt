@@ -3,9 +3,7 @@ Falta hacer los usuarios. (id, nombre, mail, contraseña, detalles)
 Falta hacer la pagina del perfil, y poder modificar los datos del usuario
 Los usuarios deberian llegar por parametro cuando se logea, y no desde la base de datos.
 Falta hacer el login (pagina para crear un usuario?)
-Falta aceptar o rechazar las solicitudes que no tienen respuesta del usuario
-
-
+Falta aceptar o rechazar las solicitudes que no tienen respuesta del usuario. HECHO
 
 
 

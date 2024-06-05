@@ -82,7 +82,7 @@ class _FormularioBodyState extends State<FormularioBody> {
                         setState(() {
                           _isLoading = false;
                         });
-                        Navigator.of(context).pop();
+                        context.pop();
                       }
                     },
                     child: const Text('Confirmar'))
