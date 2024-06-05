@@ -4,9 +4,15 @@ import 'package:proyecto_final/core/router/app_router.dart';
 import 'package:proyecto_final/firebase_options.dart';
 
 Future<void> main() async {
+  // Asegúrate de que los bindings de Flutter se inicialicen antes de hacer cualquier otra cosa
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa Firebase
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Ejecuta tu aplicación
   runApp(const MainApp());
 }
 
@@ -22,4 +28,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-
