@@ -6,20 +6,3 @@ Falta hacer el login (pagina para crear un usuario?)
 Falta aceptar o rechazar las solicitudes que no tienen respuesta del usuario. HECHO
 
 
-
-******************************************************************BUGS******************************************************************
-Formulario:
-  Al mandar el formulario, no estoy usando "await" al hacer:
-                          final doc = db.collection("solicitudes").doc();
-                          final newSolicitud = {
-                            ...formData, // Propagamos todos los datos de formData
-                            'id': doc.id,
-                          };
-                        await?<------doc.set(newSolicitud);
-
-  Al mandar el formulario, no se ve el circule progress (porque se manda muy rapido)
-  Cuando vuelve al home, despues de mandar el formulario, se abre con el Drawer abierto.
-
-------------------------------------------------------------------------
-
-El drawer sigue sin funcionar cuando seleccionas otra opcion

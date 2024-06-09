@@ -1,31 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
+import 'package:proyecto_final/core/providers/solicitudes_providers.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
 
-class SolicitudScreen extends StatelessWidget {
+class SolicitudScreen extends ConsumerStatefulWidget {
   static const String name = 'solicitudscreen';
   final Solicitud solicitud;
-  SolicitudScreen({super.key, required this.solicitud});
+  const SolicitudScreen({super.key, required this.solicitud});
+   @override
+  SolicitudScreenState createState() => SolicitudScreenState(solicitud: solicitud);
 
-  FirebaseFirestore db = FirebaseFirestore.instance;
+}
+
+  class SolicitudScreenState extends ConsumerState<SolicitudScreen>{
+  final Solicitud solicitud;
+  SolicitudScreenState({required this.solicitud});
+  @override
+  void initState() {
+    super.initState();
+    
+  }
+
 
   //METODO PARA FORMATEAR LA FECHA DE SOLICITUD
   String _getFormattedDate(DateTime fecha) {
     print(fecha);
     return '${fecha.day}/${(fecha.month)}/${fecha.year}';
-  }
-
-  //METODO PARA ACEPTAR O RECHAZAR LA SOLICITUD
-  void actualizarSolicitud(bool respuesta){
-      final solicitudRef = db.collection('solicitudes').doc(solicitud.id);
-      solicitudRef.update({'estaAprobada': respuesta}).then((value) {
-      },
-      onError: (e){
-        print('Error actualizando solicitud: ' + e.message);
-        
-      });
   }
 
 //ABRIR DIALOG DEL MENSAJE
@@ -64,7 +66,7 @@ class SolicitudScreen extends StatelessWidget {
             _buildInfoRow(Icons.email_outlined, solicitud.mail),
             _buildInfoRow(Icons.announcement_outlined, solicitud.asunto),
             _buildInfoRow(Icons.calendar_month_outlined,
-                _getFormattedDate(solicitud.fechaCreacion)),
+              _getFormattedDate(solicitud.fechaCreacion)),
             _buildInfoRow(Icons.person_outline, solicitud.id),
             const SizedBox(height: 16.0),
             ElevatedButton(
@@ -100,32 +102,29 @@ class SolicitudScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       OutlinedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           try{
-                            actualizarSolicitud(false);
-                            SnackBarWidget.show(context,
-                              'Solicitud Rechazada por el usuario', Colors.red);
-                          context.pop(); //Vuelve para atras
+                            await ref.read(solicitudProvider.notifier).actualizarSolicitud(solicitud.id, false);
+                            SnackBarWidget.show(context,'Solicitud Rechazada por el usuario', Colors.red);
                           }catch(e) {
                             SnackBarWidget.show(context, "Error al actualizar la solicitud", Colors.red);
+                            print(e);
                           }
+                          context.pop(); //Vuelve para atras
                           
                         },
                         child: const Text('Rechazar'),
                       ),
                       FilledButton(
-                        onPressed: () {
+                        onPressed: () async {
                           try{
-                            actualizarSolicitud(true);
-                          //LOGICA PARA VALIDAR O RECHAZAR LA SOLICITUD
-                            SnackBarWidget.show(
-                              context,
-                              'Solicitud Aceptada por el usuario',
-                              Colors.green);
-                            context.pop(); //Vuelve para atras
+                            await ref.read(solicitudProvider.notifier).actualizarSolicitud(solicitud.id, true);
+                            SnackBarWidget.show(context,'Solicitud Aceptada por el usuario',Colors.green);
                           }catch(e){
                             SnackBarWidget.show(context, "Error al actualizar la solicitud", Colors.red);
+                            print(e);
                           }
+                          context.pop(); //Vuelve para atras
                         },
                         child: const Text('Aceptar'),
                       ),

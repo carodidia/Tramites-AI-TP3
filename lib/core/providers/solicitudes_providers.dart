@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
 
@@ -31,6 +30,16 @@ class SolicitudNotifier extends StateNotifier<List<Solicitud>> {
         toFirestore: (Solicitud solicitud, _) => solicitud.toJson());
     final solicitudes = await docs.get();
     state = [...solicitudes.docs.map((d) => d.data())];
+  }
+
+  Future<void> actualizarSolicitud(String id, bool aprobada) async {
+    final doc = db.collection('solicitudes').doc(id);
+    try{
+      await doc.update({"estaAprobada": aprobada});
+      await obtenerSolicitudes();
+    }catch (e){
+      print(e);
+    }
   }
 
 

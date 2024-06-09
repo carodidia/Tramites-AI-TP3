@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
 import 'package:proyecto_final/core/providers/solicitudes_providers.dart';
-import 'package:proyecto_final/core/widgets/drawer_menu.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:proyecto_final/presentation/screens/home_screen.dart';
 
 class FormularioScreen extends StatefulWidget {
   static const String name = 'formularioscreen';
@@ -37,7 +36,6 @@ class FormularioBody extends ConsumerStatefulWidget {
 }
 
 class FormularioBodyState extends ConsumerState<FormularioBody> {
-  //FirebaseFirestore db = FirebaseFirestore.instance;
   final GlobalKey<FormState> _formularioEstado = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final asuntoController = TextEditingController();
@@ -48,7 +46,6 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
 @override
   void initState() {
     super.initState();
-    ref.read(solicitudProvider.notifier).obtenerSolicitudes();
     
   }
 
@@ -69,24 +66,20 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                     child: const Text('Cancel')),
                 FilledButton(
                     onPressed: () async {
-                      context.pop(); 
-                      context.pop();//Cierra el dialog al apretar el boton
-                      setState(() {
-                        _isLoading = true;
-                      });
+                      // setState(() {
+                      //   _isLoading = true;
+                      // });
                       try{
                         await ref.read(solicitudProvider.notifier).agregarSolicitud(solicitud);
-                        setState(() {
-                          _isLoading = false;
-                        });
-                        // if (mounted) {
-                        //   context.pop();// Asegúrate de que 'context' esté en un estado válido
-                        //show(context, "Formulario enviado", Colors.green); 
-                        //   }                     
+                        // setState(() {
+                        //   _isLoading = false;
+                        // });
+                        SnackBarWidget.show(context,'Solicitud enviada con exito',Colors.green);                   
                       }catch (e) {
-                        //show(context, "Error al enviar la solicitud", Colors.red);
+                         SnackBarWidget.show(context, "Error enviar la solicitud", Colors.red);
                         print(e);
                       }
+                      context.pushNamed(HomeScreen.name,);
                     },
                     child: const Text('Confirmar'))
               ],
@@ -220,15 +213,6 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                       // Crea la solicitud al "Enviar"
                       if (_formularioEstado.currentState!.validate()) {
                         _formularioEstado.currentState!.save();
-                        /*final formData = {
-                          'id': '',
-                          'mail': emailController.text,
-                          'asunto': asuntoController.text,
-                          'mensaje': mensajeController.text,
-                          'fechaCreacion': Timestamp.now(),
-                          'respuestaIA': respuestaIA,
-                          'estaAprobada': null,
-                        };*/
                         final solicitud = Solicitud(id: '', mail: emailController.text, asunto: asuntoController.text, fechaCreacion: DateTime.now(), mensaje: mensajeController.text, respuestaIA: respuestaIA);
                         _showMessageDialog(context, solicitud);
                       }

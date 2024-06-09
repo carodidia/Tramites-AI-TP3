@@ -11,11 +11,11 @@ class SolicitudesScreen extends ConsumerStatefulWidget{
 
   SolicitudesScreen({super.key});
   @override
-  SolicitudScreenState createState() => SolicitudScreenState();
+  SolicitudesScreenState createState() => SolicitudesScreenState();
 
 }
 
-class SolicitudScreenState extends ConsumerState<SolicitudesScreen>{
+class SolicitudesScreenState extends ConsumerState<SolicitudesScreen>{
 @override
   void initState() {
     super.initState();
