@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:proyecto_final/core/entities/solicitud.dart';
+import 'package:proyecto_final/core/providers/solicitudes_providers.dart';
 import 'package:proyecto_final/core/widgets/drawer_menu.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,35 +25,37 @@ class _FormularioScreenState extends State<FormularioScreen> {
         title: const Text('Formulario'),
       ),
       body: const FormularioBody(),
-      drawer: DrawerMenu(scafoldKey: scafoldKey),
     );
   }
 }
 
-class FormularioBody extends StatefulWidget {
+class FormularioBody extends ConsumerStatefulWidget {
   const FormularioBody({super.key});
 
   @override
-  State<FormularioBody> createState() => _FormularioBodyState();
+  FormularioBodyState createState() => FormularioBodyState();
 }
 
-class _FormularioBodyState extends State<FormularioBody> {
-  FirebaseFirestore db = FirebaseFirestore.instance;
-
+class FormularioBodyState extends ConsumerState<FormularioBody> {
+  //FirebaseFirestore db = FirebaseFirestore.instance;
   final GlobalKey<FormState> _formularioEstado = GlobalKey<FormState>();
-
   final emailController = TextEditingController();
-
   final asuntoController = TextEditingController();
-
   final mensajeController = TextEditingController();
-
   String respuestaIA = 'Rechazada por AI';
   bool _isLoading = false;
 
+@override
+  void initState() {
+    super.initState();
+    ref.read(solicitudProvider.notifier).obtenerSolicitudes();
+    
+  }
+
 
 //ABRIR DIALOG DEL MENSAJE
-  void _showMessageDialog(BuildContext context, Map<String, dynamic> formData) {
+  void _showMessageDialog(BuildContext context, Solicitud solicitud) {
+
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -63,26 +68,24 @@ class _FormularioBodyState extends State<FormularioBody> {
                     },
                     child: const Text('Cancel')),
                 FilledButton(
-                    onPressed: () {
-                      context.pop(); //Cierra el dialog al apretar el boton
+                    onPressed: () async {
+                      context.pop(); 
+                      context.pop();//Cierra el dialog al apretar el boton
                       setState(() {
                         _isLoading = true;
                       });
                       try{
-                        final doc = db.collection("solicitudes").doc();
-                        final newSolicitud = {
-                          ...formData, // Propagamos todos los datos de formData
-                          'id': doc.id,
-                        };
-                        doc.set(newSolicitud);
-                        SnackBarWidget.show(context, "Formulario enviado", Colors.green);
-                      }catch (e) {
-                        SnackBarWidget.show(context, "Error al enviar la solicitud", Colors.red);
-                      }finally{
+                        await ref.read(solicitudProvider.notifier).agregarSolicitud(solicitud);
                         setState(() {
                           _isLoading = false;
                         });
-                        context.pop();
+                        // if (mounted) {
+                        //   context.pop();// Asegúrate de que 'context' esté en un estado válido
+                        //show(context, "Formulario enviado", Colors.green); 
+                        //   }                     
+                      }catch (e) {
+                        //show(context, "Error al enviar la solicitud", Colors.red);
+                        print(e);
                       }
                     },
                     child: const Text('Confirmar'))
@@ -217,7 +220,7 @@ class _FormularioBodyState extends State<FormularioBody> {
                       // Crea la solicitud al "Enviar"
                       if (_formularioEstado.currentState!.validate()) {
                         _formularioEstado.currentState!.save();
-                        final formData = {
+                        /*final formData = {
                           'id': '',
                           'mail': emailController.text,
                           'asunto': asuntoController.text,
@@ -225,8 +228,9 @@ class _FormularioBodyState extends State<FormularioBody> {
                           'fechaCreacion': Timestamp.now(),
                           'respuestaIA': respuestaIA,
                           'estaAprobada': null,
-                        };
-                        _showMessageDialog(context, formData);
+                        };*/
+                        final solicitud = Solicitud(id: '', mail: emailController.text, asunto: asuntoController.text, fechaCreacion: DateTime.now(), mensaje: mensajeController.text, respuestaIA: respuestaIA);
+                        _showMessageDialog(context, solicitud);
                       }
                     },
                     child: const Text('Enviar'),

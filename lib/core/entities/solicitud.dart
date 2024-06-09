@@ -37,7 +37,7 @@ class Solicitud {
   ) {
     final data = snapshot.data();
     return Solicitud(
-      id: data?['id'], // Si 'id' es null, usa una cadena vacía en su lugar
+      id: data?['id'],
       mail: data?['mail'],
       asunto: data?['asunto'],
       fechaCreacion: (data?['fechaCreacion'] as Timestamp?)!.toDate(), // Conversión de Timestamp a DateTime
@@ -49,13 +49,19 @@ class Solicitud {
 
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       "mail": mail,
       "asunto": asunto,
-      "fechaCreacion": fechaCreacion != null ? Timestamp.fromDate(fechaCreacion!) : null, // Conversión de DateTime a Timestamp
+      "fechaCreacion": Timestamp.fromDate(fechaCreacion), // Conversión de DateTime a Timestamp
       "mensaje": mensaje,
       "respuestaIA": respuestaIA,
       "estaAprobada": estaAprobada,
     };
+  }
+
+  @override 
+  String toString() {
+    return  'Solicitud{id: $id, /* otros campos/}';
   }
   
 

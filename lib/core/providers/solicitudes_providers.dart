@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
 
@@ -14,6 +15,8 @@ class SolicitudNotifier extends StateNotifier<List<Solicitud>> {
 
   Future<void> agregarSolicitud(Solicitud solicitud) async {
     final doc = db.collection('solicitudes').doc();
+    solicitud.id = doc.id;
+    print(solicitud.toString());
     try{
       await doc.set(solicitud.toJson());
       state = [...state, solicitud];
@@ -29,4 +32,8 @@ class SolicitudNotifier extends StateNotifier<List<Solicitud>> {
     final solicitudes = await docs.get();
     state = [...solicitudes.docs.map((d) => d.data())];
   }
+
+
 }
+
+
