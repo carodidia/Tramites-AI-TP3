@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
+import 'package:proyecto_final/presentation/screens/addUser_screen.dart';
 import 'package:proyecto_final/presentation/screens/formulario_screen.dart';
 import 'package:proyecto_final/presentation/screens/historial_screen.dart';
 import 'package:proyecto_final/presentation/screens/home_screen.dart';
@@ -13,6 +14,11 @@ final AppRouter = GoRouter(initialLocation: '/', routes: [
   name: LogInScreen.name,
   path: '/',
   builder: (context, state)=> const LogInScreen()),
+
+  GoRoute(
+      name: AddUserScreen.name,
+      path: '/addUser',
+      builder: (context, state) => const AddUserScreen()),
 
   GoRoute(
       name: HomeScreen.name,

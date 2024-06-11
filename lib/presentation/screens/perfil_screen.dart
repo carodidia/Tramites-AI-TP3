@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/usuario.dart';
+import 'package:proyecto_final/core/providers/user_providers.dart';
 import 'package:proyecto_final/core/widgets/drawer_menu.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
 
-class PerfilScreen extends StatefulWidget {
+class PerfilScreen extends ConsumerStatefulWidget {
   static const String name = 'perfilscreen';
 
   const PerfilScreen({
@@ -13,11 +15,10 @@ class PerfilScreen extends StatefulWidget {
   });
 
   @override
-  State<PerfilScreen> createState() => _PerfilScreenState();
+  _PerfilScreenState createState() => _PerfilScreenState();
 }
 
-class _PerfilScreenState extends State<PerfilScreen> {
-  FirebaseFirestore db = FirebaseFirestore.instance;
+class _PerfilScreenState extends ConsumerState<PerfilScreen> {
   final GlobalKey<FormState> _formularioEstado = GlobalKey<FormState>();
 
   final scafoldKey = GlobalKey<ScaffoldState>();
@@ -29,38 +30,28 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool _passwordVisible = false;
   bool _isLoading = false;
 
-  // Datos hardcodeados del usuario
-  final String _userId = "mXZwKRuljuoPj669xmq0";
-
   @override
   void initState() {
     super.initState();
-    // Inicializar los controladores con los valores hardcodeados
-    _nombreController.text = "Test";
-    _emailController.text = "admin@tramitesai.com";
-    _passwordController.text = "1234";
-    _detallesController.text =
-        "Detalles de este usuario para poner en la pagina del perfil";
+    Usuario user = ref.read(userProvider);
+    _nombreController.text = user.nombre;
+    _emailController.text = user.mail;
+    _passwordController.text = user.password;
+    _detallesController.text = user.detalles;
   }
 
   @override
   void dispose() {
-    // Liberar los controladores cuando no se necesiten
     _nombreController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
     _detallesController.dispose();
     super.dispose();
   }
 
-  Future<void> _saveUserData() async {
+  Future<void> _saveUserData(Usuario newUser) async {
     try {
-      await db.collection('usuarios').doc(_userId).set({
-        'id': _userId,
-        'nombre': _nombreController.text,
-        'email': _emailController.text,
-        'detalles': _detallesController.text,
-        'contraseña': _passwordController.text,
-      });
+      await ref.read(userProvider.notifier).actualizarUser(newUser);
       SnackBarWidget.show(context, "Datos guardados con éxito", Colors.green);
       context.pop();
     } catch (e) {
@@ -84,16 +75,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      context.pop(); //Cierra el dialog al apretar el boton
+                      context.pop();
                     },
                     child: const Text('Cancel')),
                 FilledButton(
-                    onPressed: () {
-                      context.pop(); //Cierra el dialog al apretar el boton
+                    onPressed: () async {
+                      context.pop();
                       setState(() {
                         _isLoading = true;
                       });
-                      _saveUserData();
+                      final newUser = Usuario(
+                          id: ref.read(userProvider).id, //Estara bien esto asi?
+                          nombre: _nombreController.text,
+                          mail: _emailController.text,
+                          password: _passwordController.text,
+                          detalles: _detallesController.text);
+                      await _saveUserData(newUser);
                     },
                     child: const Text('Confirmar'))
               ],
@@ -201,11 +198,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                           ? const CircularProgressIndicator()
                           : FilledButton(
                               onPressed: () {
-                                if (_formularioEstado.currentState!
-                                    .validate()) {
-                                  _formularioEstado.currentState!.save();
-                                  _showMessageDialog(context);
-                                }
+                                guardarCambios();
                               },
                               child: const Text("Guardar cambios")),
                     ),
@@ -213,5 +206,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 )),
           ),
         ));
+  }
+
+  void guardarCambios() {
+    if (_formularioEstado.currentState!.validate()) {
+      _formularioEstado.currentState!.save();
+      _showMessageDialog(context);
+    }
   }
 }
