@@ -66,6 +66,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
   }
 
   void _showMessageDialog(BuildContext context) {
+    Usuario user = ref.read(userProvider);
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -85,11 +86,13 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
                         _isLoading = true;
                       });
                       final newUser = Usuario(
-                          id: ref.read(userProvider).id, //Estara bien esto asi?
+                          id: user.id, //Estara bien esto asi?
                           nombre: _nombreController.text,
                           mail: _emailController.text,
                           password: _passwordController.text,
-                          detalles: _detallesController.text);
+                          detalles: _detallesController.text,
+                          files: user.files//Estara bien esto asi?
+                          );
                       await _saveUserData(newUser);
                     },
                     child: const Text('Confirmar'))

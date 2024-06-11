@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/usuario.dart';
@@ -38,6 +37,7 @@ class _LoginViewState extends ConsumerState<_LoginView> {
   final TextEditingController _passwordController = TextEditingController();
   bool _passwordVisible = false;
   bool _datosIncorrectos = false;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,12 +118,16 @@ class _LoginViewState extends ConsumerState<_LoginView> {
                         ])),
 
                 const SizedBox(height: 10),
-                Text(
-                  _datosIncorrectos ? 'Usuario o contraseña incorrectos' : '',
-                  style: const TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
+                _datosIncorrectos
+                    ? const Text(
+                        'Usuario o contraseña incorrectos',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      )
+                    : _isLoading
+                        ? const CircularProgressIndicator()
+                        : const SizedBox.shrink(),
                 const SizedBox(height: 50),
                 SizedBox(
                   width: double.infinity,
@@ -144,6 +148,7 @@ class _LoginViewState extends ConsumerState<_LoginView> {
                     child: const Text('Registrar'),
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             )));
   }
@@ -152,6 +157,10 @@ class _LoginViewState extends ConsumerState<_LoginView> {
     if (_formularioEstado.currentState!.validate()) {
       _formularioEstado.currentState!.save();
       try {
+        setState(() {
+          _isLoading = true;
+          _datosIncorrectos = false;
+        });
         await ref
             .read(userProvider.notifier)
             .getUser(_mailController.text, _passwordController.text);
@@ -162,7 +171,8 @@ class _LoginViewState extends ConsumerState<_LoginView> {
           });
           Usuario user = ref.read(userProvider.notifier).getUserLogged();
           context.pushNamed(HomeScreen.name);
-          SnackBarWidget.show(context, "Bienvenido ${user.nombre}", Colors.green);
+          SnackBarWidget.show(
+              context, "Bienvenido ${user.nombre}", Colors.green);
         } else {
           print("No logeado");
           setState(() {
@@ -171,6 +181,10 @@ class _LoginViewState extends ConsumerState<_LoginView> {
         }
       } catch (e) {
         print(e);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
