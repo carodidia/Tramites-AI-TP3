@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
+import 'package:proyecto_final/core/providers/solicitudes_providers.dart';
 
-class PieChartWidget extends StatefulWidget {
-  final List<Solicitud> solicitudes;
-  const PieChartWidget({super.key, required this.solicitudes});
-
-  @override
-  State<PieChartWidget> createState() => _PieChartWidgetState();
+class PieChartWidget extends ConsumerStatefulWidget {
+  const PieChartWidget({super.key,});
+  _PieChartWidgetState createState() => _PieChartWidgetState();
+ 
+  
 }
 
-class _PieChartWidgetState extends State<PieChartWidget> {
+class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
   Map<String, double> dataMap = {};
-
+  
   final colorList = <Color>[
     const Color(0xFF299303),
     const Color(0xFFC40D0D),
@@ -22,15 +23,18 @@ class _PieChartWidgetState extends State<PieChartWidget> {
   @override
   void initState() {
     super.initState();
-    dataMap = {
-      "Aprobadas": widget.solicitudes.where((solicitud) => solicitud.estaAprobada == true).length.toDouble(),
-      "Rechazadas": widget.solicitudes.where((solicitud) => solicitud.estaAprobada == false).length.toDouble(),
-      "Sin Respuesta": widget.solicitudes.where((solicitud) => solicitud.estaAprobada == null).length.toDouble(),
-    };
+    ref.read(solicitudProvider.notifier).obtenerSolicitudes();
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Solicitud> solicitudes =  ref.watch(solicitudProvider);
+    dataMap = {
+      "Aprobadas": solicitudes.where((solicitud) => solicitud.estaAprobada == true).length.toDouble(),
+      "Rechazadas": solicitudes.where((solicitud) => solicitud.estaAprobada == false).length.toDouble(),
+      "Sin Respuesta": solicitudes.where((solicitud) => solicitud.estaAprobada == null).length.toDouble(),
+    };
     return PieChart(
       dataMap: dataMap,
       chartType: ChartType.disc,

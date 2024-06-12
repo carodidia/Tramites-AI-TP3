@@ -23,7 +23,7 @@ final AppRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
       name: HomeScreen.name,
       path: '/home',
-      builder: (context, state) => const HomeScreen()),
+      builder: (context, state) => HomeScreen()),
 
   GoRoute(
       name: FormularioScreen.name,
