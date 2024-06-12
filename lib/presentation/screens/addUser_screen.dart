@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +45,7 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
   bool _passwordVisible = false;
   bool _isLoading = false;
   bool _emailRegistered = false;
+  List<String> fileList = [];
 
   @override
   void initState() {
@@ -77,41 +79,23 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
         _isLoading = false;
       });
     }
+  }
 
-    // showDialog(
-    //     context: context,
-    //     builder: (context) => AlertDialog(
-    //           title: const Text('Confirmar usuario'),
-    //           content: const Text('¿Estas seguro de crear este usuario?'),
-    //           actions: [
-    //             TextButton(
-    //                 onPressed: () {
-    //                   context.pop();
-    //                 },
-    //                 child: const Text('Cancel')),
-    //             FilledButton(
-    //               onPressed: () async {
-    //                 context.pop();
-    //                 setState(() {
-    //                   _isLoading = true;
-    //                 });
-    //                 try {
-    //                   await ref.read(userProvider.notifier).addUser(user);
-    //                   context.pushNamed(
-    //                     HomeScreen.name,
-    //                   );
-    //                 } catch (e) {
-    //                   print(e);
-    //                 } finally {
-    //                   setState(() {
-    //                     _isLoading = false;
-    //                   });
-    //                 }
-    //               },
-    //               child: Text('Submit'),
-    //             ),
-    //           ],
-    //         ));
+  Future<List<String>> _pickImages() async {
+    List<String> selectedImages = [];
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true, // Permitir la selección de múltiples archivos
+        type: FileType.image,
+      );
+
+      if (result != null) {
+        selectedImages = result.paths.whereType<String>().toList();
+      }
+    } catch (e) {
+      print("Error al seleccionar imágenes: $e");
+    }
+    return selectedImages;
   }
 
   @override
@@ -229,8 +213,29 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 20.0),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              List<String> selectedImages = await _pickImages();
+                              setState(() {
+                                // Agrega las URLs de las imágenes seleccionadas a la lista de archivos
+                                fileList.addAll(selectedImages);
+                              });
+                            },
+                            icon: const Icon(Icons.attach_file),
+                            label: const Text('Adjuntar imágenes'),
+                          ),
+                          Text(
+                            fileList.isNotEmpty
+                                ? '${fileList.length} archivos cargados'
+                                : '',
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 70.0),
-                           Text(
+                          Text(
                             _emailRegistered
                                 ? 'El email ingresado ya se encuentra registrado.'
                                 : '',
@@ -245,11 +250,14 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                               if (_formularioEstado.currentState!.validate()) {
                                 _formularioEstado.currentState!.save();
                                 final user = Usuario(
-                                    id: '',
-                                    nombre: nombreController.text,
-                                    mail: mailController.text,
-                                    password: passwordController.text,
-                                    detalles: "");
+                                  id: '',
+                                  nombre: nombreController.text,
+                                  mail: mailController.text,
+                                  password: passwordController.text,
+                                  detalles: "",
+                                  files:
+                                      fileList, // Usar la lista de archivos seleccionados
+                                );
                                 registrar(user);
                               }
                             },

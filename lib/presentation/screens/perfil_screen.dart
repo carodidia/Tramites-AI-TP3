@@ -33,7 +33,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
   @override
   void initState() {
     super.initState();
-    Usuario user = ref.read(userProvider);
+    Usuario user = ref.watch(userProvider);
     _nombreController.text = user.nombre;
     _emailController.text = user.mail;
     _passwordController.text = user.password;
@@ -65,8 +65,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
     }
   }
 
-  void _showMessageDialog(BuildContext context) {
-    Usuario user = ref.read(userProvider);
+  void _showMessageDialog(BuildContext context, Usuario user) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -91,7 +90,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
                           mail: _emailController.text,
                           password: _passwordController.text,
                           detalles: _detallesController.text,
-                          files: user.files//Estara bien esto asi?
+                          files: user.files //Estara bien esto asi?
                           );
                       await _saveUserData(newUser);
                     },
@@ -102,6 +101,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Usuario user = ref.read(userProvider);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Perfil'),
@@ -201,7 +201,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
                           ? const CircularProgressIndicator()
                           : FilledButton(
                               onPressed: () {
-                                guardarCambios();
+                                guardarCambios(user);
                               },
                               child: const Text("Guardar cambios")),
                     ),
@@ -211,10 +211,10 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
         ));
   }
 
-  void guardarCambios() {
+  void guardarCambios(Usuario user) {
     if (_formularioEstado.currentState!.validate()) {
       _formularioEstado.currentState!.save();
-      _showMessageDialog(context);
+      _showMessageDialog(context, user);
     }
   }
 }

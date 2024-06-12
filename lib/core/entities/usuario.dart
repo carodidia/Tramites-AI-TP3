@@ -6,6 +6,7 @@ class Usuario {
   String mail;
   String password;
   String detalles;
+  List<String> files;
 
   Usuario({
     required this.id,
@@ -13,6 +14,7 @@ class Usuario {
     required this.mail,
     required this.password,
     required this.detalles,
+    required this.files
   });
 
   factory Usuario.fromFirestore(
@@ -26,6 +28,7 @@ class Usuario {
       mail: data?['mail'],
       password: data?['password'],
       detalles: data?['detalles'],
+      files: (data?['files'] as List<dynamic>).cast<String>(), // Convertir a List<String>
     );
   }
 
@@ -36,10 +39,11 @@ class Usuario {
       "mail": mail,
       "password": password,
       "detalles": detalles,
+      "files": files,
     };
   }
   @override
   String toString() {
-    return 'Usuario{id: $id, nombre: $nombre, mail: $mail, password: $password, detalles: $detalles}';
+    return 'Usuario{id: $id, nombre: $nombre, mail: $mail, password: $password, detalles: $detalles, files: $files}';
   }
 }
