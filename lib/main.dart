@@ -5,7 +5,7 @@ import 'package:proyecto_final/core/router/app_router.dart';
 import 'package:proyecto_final/firebase_options.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); //Agregar esta linea primero
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

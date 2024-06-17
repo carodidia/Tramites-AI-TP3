@@ -11,7 +11,7 @@ class UsuarioNotifier extends StateNotifier<Usuario> {
 
   UsuarioNotifier(this.db)
       : super(
-            Usuario(id: "", nombre: "", mail: "", password: "", detalles: "", files:[]));
+            Usuario(id: "", nombre: "", mail: "", password: "", detalles: ""));
 
   Future<void> addUser(Usuario user) async {
     final doc = db.collection('usuarios').doc();
@@ -105,6 +105,6 @@ class UsuarioNotifier extends StateNotifier<Usuario> {
 
   void logOut() {
     print("USUARIO LOGOUT");
-    state = Usuario(id: "", nombre: "", mail: "", password: "", detalles: "", files:[]);
+    state = Usuario(id: "", nombre: "", mail: "", password: "", detalles: "");
   }
 }

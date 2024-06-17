@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SnackBarWidget {
   static void show(BuildContext context, String mensaje, Color color) {
     final snackBar = SnackBar(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
       content: Text(
         mensaje,
         style: TextStyle(

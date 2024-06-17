@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +17,7 @@ class FormularioScreen extends StatefulWidget {
 
 class _FormularioScreenState extends State<FormularioScreen> {
   final scafoldKey = GlobalKey<ScaffoldState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,17 +43,15 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
   final mensajeController = TextEditingController();
   String respuestaIA = 'Rechazada por AI';
   bool _isLoading = false;
+  List<String> fileList = [];
 
-@override
+  @override
   void initState() {
     super.initState();
-    
   }
-
 
 //ABRIR DIALOG DEL MENSAJE
   void _showMessageDialog(BuildContext context, Solicitud solicitud) {
-
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -61,29 +60,53 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      context.pop(); //Cierra el dialog al apretar el boton
+                      context.pop();
                     },
                     child: const Text('Cancel')),
                 FilledButton(
                     onPressed: () async {
-                      // setState(() {
-                      //   _isLoading = true;
-                      // });
-                      try{
-                        await ref.read(solicitudProvider.notifier).agregarSolicitud(solicitud);
-                        // setState(() {
-                        //   _isLoading = false;
-                        // });
-                        SnackBarWidget.show(context,'Solicitud enviada con exito',Colors.green);                   
-                      }catch (e) {
-                         SnackBarWidget.show(context, "Error enviar la solicitud", Colors.red);
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      try {
+                        await ref
+                            .read(solicitudProvider.notifier)
+                            .agregarSolicitud(solicitud);
+                        SnackBarWidget.show(context,
+                            'Solicitud enviada con exito', Colors.green);
+                      } catch (e) {
+                        SnackBarWidget.show(
+                            context, "Error enviar la solicitud", Colors.red);
                         print(e);
+                      } finally {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        context.pushNamed(
+                          HomeScreen.name,
+                        );
                       }
-                      context.pushNamed(HomeScreen.name,);
                     },
                     child: const Text('Confirmar'))
               ],
             ));
+  }
+
+  Future<List<String>> _pickImages() async {
+    List<String> selectedImages = [];
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.image,
+      );
+
+      if (result != null) {
+        selectedImages = result.paths.whereType<String>().toList();
+      }
+    } catch (e) {
+      print("Error al seleccionar imágenes: $e");
+    }
+    return selectedImages;
   }
 
   @override
@@ -115,9 +138,7 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    
                     const SizedBox(height: 16.0),
-
                     TextFormField(
                       controller: asuntoController,
                       validator: (value) {
@@ -132,9 +153,7 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                         border: OutlineInputBorder(),
                       ),
                     ),
-
                     const SizedBox(height: 16.0),
-
                     TextFormField(
                       controller: mensajeController,
                       validator: (value) {
@@ -151,9 +170,7 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                       maxLines: 6,
                       keyboardType: TextInputType.multiline,
                     ),
-
                     const SizedBox(height: 16.0),
-
                     const Text('Simulación respuesta IA:'),
                     Row(
                       children: [
@@ -191,11 +208,24 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        // Acción para adjuntar archivos (no funcional por ahora)
+                      onPressed: () async {
+                        List<String> selectedImages = await _pickImages();
+                        setState(() {
+                          // Agrega las URLs de las imágenes seleccionadas a la lista de archivos
+                          fileList.addAll(selectedImages);
+                        });
                       },
                       icon: const Icon(Icons.attach_file),
-                      label: const Text('Adjuntar archivos'),
+                      label: const Text('Adjuntar imágenes'),
+                    ),
+                    Text(
+                      fileList.isNotEmpty
+                          ? '${fileList.length} archivos cargados'
+                          : '',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -213,7 +243,15 @@ class FormularioBodyState extends ConsumerState<FormularioBody> {
                       // Crea la solicitud al "Enviar"
                       if (_formularioEstado.currentState!.validate()) {
                         _formularioEstado.currentState!.save();
-                        final solicitud = Solicitud(id: '', mail: emailController.text, asunto: asuntoController.text, fechaCreacion: DateTime.now(), mensaje: mensajeController.text, respuestaIA: respuestaIA);
+                        final solicitud = Solicitud(
+                          id: '',
+                          mail: emailController.text,
+                          asunto: asuntoController.text,
+                          fechaCreacion: DateTime.now(),
+                          mensaje: mensajeController.text,
+                          respuestaIA: respuestaIA,
+                          files: fileList,
+                        );
                         _showMessageDialog(context, solicitud);
                       }
                     },

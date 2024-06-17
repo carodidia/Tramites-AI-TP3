@@ -38,10 +38,10 @@ class SolicitudScreen extends ConsumerStatefulWidget {
         return AlertDialog(
           title: const Text('Mensaje'),
           content: Text(mensaje),
-          actions: <Widget>[
+          actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
               child: const Text('Cerrar'),
             ),

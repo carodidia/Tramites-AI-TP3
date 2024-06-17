@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/solicitud.dart';
-import 'package:proyecto_final/presentation/screens/addUser_screen.dart';
+import 'package:proyecto_final/presentation/screens/add_user_screen.dart';
 import 'package:proyecto_final/presentation/screens/formulario_screen.dart';
 import 'package:proyecto_final/presentation/screens/historial_screen.dart';
 import 'package:proyecto_final/presentation/screens/home_screen.dart';

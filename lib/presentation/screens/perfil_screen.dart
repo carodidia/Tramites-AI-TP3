@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +32,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
   @override
   void initState() {
     super.initState();
-    Usuario user = ref.watch(userProvider);
+    Usuario user = ref.read(userProvider);
     _nombreController.text = user.nombre;
     _emailController.text = user.mail;
     _passwordController.text = user.password;
@@ -90,7 +89,6 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
                           mail: _emailController.text,
                           password: _passwordController.text,
                           detalles: _detallesController.text,
-                          files: user.files //Estara bien esto asi?
                           );
                       await _saveUserData(newUser);
                     },

@@ -8,28 +8,17 @@ class Solicitud {
   String mensaje;
   String respuestaIA;
   bool? estaAprobada;
+  List<String> files;
 
-  Solicitud({
-    required this.id,
-    required this.mail,
-    required this.asunto,
-    required this.fechaCreacion,
-    required this.mensaje,
-    required this.respuestaIA,
-    this.estaAprobada,
-  });
-
-  /*factory Solicitud.fromJson(Map<String, dynamic> json, String id) {
-    return Solicitud(
-      id: id,
-      mail: json['mail'],
-      asunto: json['asunto'],
-      fechaCreacion: (json['fechaCreacion'] as Timestamp?)!.toDate(),
-      mensaje: json['mensaje'],
-      respuestaIA: json['respuestaIA'],
-      estaAprobada: json['estaAprobada'],
-    );
-  }*/
+  Solicitud(
+      {required this.id,
+      required this.mail,
+      required this.asunto,
+      required this.fechaCreacion,
+      required this.mensaje,
+      required this.respuestaIA,
+      this.estaAprobada,
+      required this.files});
 
   factory Solicitud.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -40,10 +29,13 @@ class Solicitud {
       id: data?['id'],
       mail: data?['mail'],
       asunto: data?['asunto'],
-      fechaCreacion: (data?['fechaCreacion'] as Timestamp?)!.toDate(), // Conversión de Timestamp a DateTime
+      fechaCreacion: (data?['fechaCreacion'] as Timestamp?)!
+          .toDate(), // Conversión de Timestamp a DateTime
       mensaje: data?['mensaje'],
       respuestaIA: data?['respuestaIA'],
       estaAprobada: data?['estaAprobada'],
+      files: (data?['files'] as List<dynamic>)
+          .cast<String>(), // Convertir a List<String>
     );
   }
 
@@ -52,17 +44,17 @@ class Solicitud {
       "id": id,
       "mail": mail,
       "asunto": asunto,
-      "fechaCreacion": Timestamp.fromDate(fechaCreacion), // Conversión de DateTime a Timestamp
+      "fechaCreacion": Timestamp.fromDate(
+          fechaCreacion), // Conversión de DateTime a Timestamp
       "mensaje": mensaje,
       "respuestaIA": respuestaIA,
       "estaAprobada": estaAprobada,
+      "files": files,
     };
   }
 
-  @override 
+  @override
   String toString() {
-    return  'Solicitud{id: $id, /* otros campos/}';
+    return 'Solicitud{id: $id, /* otros campos/}';
   }
-  
-
 }

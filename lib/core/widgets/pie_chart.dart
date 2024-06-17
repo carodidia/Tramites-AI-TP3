@@ -6,6 +6,7 @@ import 'package:proyecto_final/core/providers/solicitudes_providers.dart';
 
 class PieChartWidget extends ConsumerStatefulWidget {
   const PieChartWidget({super.key,});
+  @override
   _PieChartWidgetState createState() => _PieChartWidgetState();
  
   

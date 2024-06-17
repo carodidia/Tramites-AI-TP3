@@ -42,7 +42,7 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
         DrawerHeader(
           decoration: BoxDecoration(
             color: Theme.of(context)
-                .primaryColor, // Aquí se utiliza el color primario del tema
+                .primaryColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +54,7 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
                   fontSize: 24,
                 ),
               ),
-              SizedBox(height: 18), // Espacio entre los textos
+              const SizedBox(height: 18),
               Text(
                 'Bienvenido ${user.nombre}',
                 style: TextStyle(
@@ -69,7 +69,7 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
             .sublist(0, 4)
             .map((item) => NavigationDrawerDestination(
                 icon: Icon(item.icon), label: Text(item.title)))
-            .toList(),
+            ,
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Divider(),
@@ -77,8 +77,7 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
         ...menuItems
             .sublist(4, 7)
             .map((item) => NavigationDrawerDestination(
-                icon: Icon(item.icon), label: Text(item.title)))
-            .toList(),
+                icon: Icon(item.icon), label: Text(item.title))),
         const Divider(),
       ],
     );

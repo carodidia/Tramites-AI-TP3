@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:proyecto_final/core/entities/usuario.dart';
 import 'package:proyecto_final/core/providers/user_providers.dart';
 import 'package:proyecto_final/core/widgets/snack_bar_widget.dart';
-import 'package:proyecto_final/presentation/screens/addUser_screen.dart';
+import 'package:proyecto_final/presentation/screens/add_user_screen.dart';
 import 'package:proyecto_final/presentation/screens/home_screen.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -169,10 +169,7 @@ class _LoginViewState extends ConsumerState<_LoginView> {
           setState(() {
             _datosIncorrectos = false;
           });
-          Usuario user = ref.read(userProvider.notifier).getUserLogged();
           context.pushNamed(HomeScreen.name);
-          SnackBarWidget.show(
-              context, "Bienvenido ${user.nombre}", Colors.green);
         } else {
           print("No logeado");
           setState(() {
