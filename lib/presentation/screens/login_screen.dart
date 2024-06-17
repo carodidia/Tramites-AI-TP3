@@ -70,7 +70,6 @@ class _LoginViewState extends ConsumerState<_LoginView> {
                 Form(
                     key: _formularioEstado,
                     child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextFormField(
                             controller: _mailController,

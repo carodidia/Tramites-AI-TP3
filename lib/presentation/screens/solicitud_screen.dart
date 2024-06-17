@@ -9,20 +9,18 @@ class SolicitudScreen extends ConsumerStatefulWidget {
   static const String name = 'solicitudscreen';
   final Solicitud solicitud;
   const SolicitudScreen({super.key, required this.solicitud});
-   @override
-  SolicitudScreenState createState() => SolicitudScreenState(solicitud: solicitud);
-
+  @override
+  SolicitudScreenState createState() =>
+      SolicitudScreenState(solicitud: solicitud);
 }
 
-  class SolicitudScreenState extends ConsumerState<SolicitudScreen>{
+class SolicitudScreenState extends ConsumerState<SolicitudScreen> {
   final Solicitud solicitud;
   SolicitudScreenState({required this.solicitud});
   @override
   void initState() {
     super.initState();
-    
   }
-
 
   //METODO PARA FORMATEAR LA FECHA DE SOLICITUD
   String _getFormattedDate(DateTime fecha) {
@@ -51,7 +49,6 @@ class SolicitudScreen extends ConsumerStatefulWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +63,10 @@ class SolicitudScreen extends ConsumerStatefulWidget {
             _buildInfoRow(Icons.email_outlined, solicitud.mail),
             _buildInfoRow(Icons.announcement_outlined, solicitud.asunto),
             _buildInfoRow(Icons.calendar_month_outlined,
-              _getFormattedDate(solicitud.fechaCreacion)),
+                _getFormattedDate(solicitud.fechaCreacion)),
             _buildInfoRow(Icons.person_outline, solicitud.id),
+            _buildInfoRow(
+                Icons.image, '${solicitud.files.length.toString()} archivos subidos'),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
@@ -103,25 +102,36 @@ class SolicitudScreen extends ConsumerStatefulWidget {
                     children: [
                       OutlinedButton(
                         onPressed: () async {
-                          try{
-                            await ref.read(solicitudProvider.notifier).actualizarSolicitud(solicitud.id, false);
-                            SnackBarWidget.show(context,'Solicitud Rechazada por el usuario', Colors.red);
-                          }catch(e) {
-                            SnackBarWidget.show(context, "Error al actualizar la solicitud", Colors.red);
+                          try {
+                            await ref
+                                .read(solicitudProvider.notifier)
+                                .actualizarSolicitud(solicitud.id, false);
+                            SnackBarWidget.show(
+                                context,
+                                'Solicitud Rechazada por el usuario',
+                                Colors.red);
+                          } catch (e) {
+                            SnackBarWidget.show(context,
+                                "Error al actualizar la solicitud", Colors.red);
                             print(e);
                           }
                           context.pop(); //Vuelve para atras
-                          
                         },
                         child: const Text('Rechazar'),
                       ),
                       FilledButton(
                         onPressed: () async {
-                          try{
-                            await ref.read(solicitudProvider.notifier).actualizarSolicitud(solicitud.id, true);
-                            SnackBarWidget.show(context,'Solicitud Aceptada por el usuario',Colors.green);
-                          }catch(e){
-                            SnackBarWidget.show(context, "Error al actualizar la solicitud", Colors.red);
+                          try {
+                            await ref
+                                .read(solicitudProvider.notifier)
+                                .actualizarSolicitud(solicitud.id, true);
+                            SnackBarWidget.show(
+                                context,
+                                'Solicitud Aceptada por el usuario',
+                                Colors.green);
+                          } catch (e) {
+                            SnackBarWidget.show(context,
+                                "Error al actualizar la solicitud", Colors.red);
                             print(e);
                           }
                           context.pop(); //Vuelve para atras

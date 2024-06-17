@@ -75,10 +75,9 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
           child: Divider(),
         ),
         ...menuItems
-            .sublist(4, 7)
+            .sublist(4, 6)
             .map((item) => NavigationDrawerDestination(
                 icon: Icon(item.icon), label: Text(item.title))),
-        const Divider(),
       ],
     );
   }

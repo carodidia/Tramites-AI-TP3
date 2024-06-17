@@ -31,7 +31,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     });
     try {
       await ref.read(solicitudProvider.notifier).obtenerSolicitudes();
-      Usuario user = ref.read(userProvider.notifier).getUserLogged();
+      Usuario user = ref.read(userProvider);
       SnackBarWidget.show(context, "Bienvenido ${user.nombre}", Colors.green);
     } catch (e) {
       print('Error al obtener solicitudes: $e');
