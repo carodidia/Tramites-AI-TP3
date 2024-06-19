@@ -99,7 +99,7 @@ class _PerfilScreenState extends ConsumerState<PerfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Usuario user = ref.read(userProvider);
+    Usuario user = ref.watch(userProvider);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Perfil'),

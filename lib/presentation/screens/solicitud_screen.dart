@@ -64,7 +64,6 @@ class SolicitudScreenState extends ConsumerState<SolicitudScreen> {
             _buildInfoRow(Icons.announcement_outlined, solicitud.asunto),
             _buildInfoRow(Icons.calendar_month_outlined,
                 _getFormattedDate(solicitud.fechaCreacion)),
-            _buildInfoRow(Icons.person_outline, solicitud.id),
             _buildInfoRow(
                 Icons.image, '${solicitud.files.length.toString()} archivos subidos'),
             const SizedBox(height: 16.0),

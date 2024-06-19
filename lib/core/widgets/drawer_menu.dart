@@ -29,7 +29,7 @@ class _DrawerMenuState extends ConsumerState<DrawerMenu> {
     return NavigationDrawer(
       selectedIndex: selectedScreen,
       onDestinationSelected: (value) {
-        if(value == menuItems.length - 2){
+        if(value == menuItems.length - 1){
            ref.read(userProvider.notifier).logOut();
         }
         setState(() {
